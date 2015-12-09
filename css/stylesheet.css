@@ -1,6 +1,21 @@
-.p5-banner {
-        width: 800px;
-        height: 100px;
-        color: green;
-        background-color:black;
-      }
+
+
+
+body {
+  background-image: url("http://i.huffpost.com/gen/1656182/images/o-AMERICAN-FLAG-facebook.jpg");
+  background-color:#DDFFFF;
+}
+
+#p5-banner
+{
+  top: 0px;
+  width: 900px;
+  height: 100px;
+}
+
+#piechart_div 
+{
+  top: 150px;
+  width: 900px;
+  height: 600px;
+}
