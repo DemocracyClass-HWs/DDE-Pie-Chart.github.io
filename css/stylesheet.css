@@ -2,7 +2,8 @@
 
 
 body {
-  background-image: url("http://i.huffpost.com/gen/1656182/images/o-AMERICAN-FLAG-facebook.jpg");
+  /*background-image: url("http://i.huffpost.com/gen/1656182/images/o-AMERICAN-FLAG-facebook.jpg");*/
+  background-image: url("http://www.artsfon.com/pic/201410/1920x1080/artsfon.com-17231.jpg");
   background-color:#DDFFFF;
 }
 
@@ -13,9 +14,10 @@ body {
   height: 100px;
 }
 
-#piechart_div 
+.piechart_div
 {
+  background-color: rgba(255, 255, 255, 0.8);
   top: 150px;
   width: 900px;
-  height: 600px;
+  height: 45%;
 }

@@ -11,10 +11,10 @@
 	<script language="javascript" type="text/javascript" src="p5-banner.js/sketch.js"></script>
 
 	<!-- socket.io -->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 
 	<!-- google visualization pie chart -->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
         var candidates = {}
@@ -37,15 +37,36 @@
           }
 
     		  var stats = msg.stats
-          var chartData = [["Candidate", "Number of Votes"]]
+          data.candidates = []
           for(var candidate in stats.candidates) {
-            chartData.push([candidates[candidate], parseInt(stats.candidates[candidate])])
+            data.candidates.push([candidates[candidate], parseInt(stats.candidates[candidate])])
           }
-          data.candidates = chartData
-          drawChart(chartData)
-    		})
 
+          data.candidates.sort(function(a,b) {
+            if(a[0]>b[0])return 1
+            if(a[0]<b[0])return -1
+            return 0
+          })
+          data.candidates.splice(0,0,["Candidate", "Number of Votes"])
+
+          // policies
+          data.policies = []
+          for(var policy in stats.policies) {
+            var policy = policies[policy]
+            data.policies.push([candidates[policy.corrospondingCandidateId], parseInt(stats.policies[policy._id])])
+          }
+          data.policies.sort(function(a,b) {
+            if(a[0]>b[0])return 1
+            if(a[0]<b[0])return -1
+            return 0
+          })
+          data.policies.splice(0,0,["Policy of Candidate", "Number of Votes"])
+
+        })
+
+        var submissionCount = 0
     		socket.on('new_submission', function(msg) {
+
           msg = JSON.parse(msg)
           var candidateName = candidates[msg.candidate_id]
           for(var i = 0; i < data.candidates.length; i++) {
@@ -54,18 +75,36 @@
               break;
             }
           }
-          drawChart(data.candidates)
+
+          var policyCandidateName = candidates[ policies[msg.policy_id].corrospondingCandidateId ]
+          for(var i = 0; i < data.policies.length; i++) {
+            if(data.policies[i][0] == policyCandidateName) {
+              data.policies[i][1]++
+              break;
+            }
+          }
+
+          if(++submissionCount < 5) {
+            return
+          }
+          drawChart(data.candidates, 'can_piechart_div')
+          drawChart(data.policies, 'pol_piechart_div')
+          submissionCount = 0
     		})
 
-	      google.load("visualization", "1", {packages:["corechart"]});
-	      //google.setOnLoadCallback(drawChart);
-	      function drawChart(data) {
-	      	var votes
-	        var data = google.visualization.arrayToDataTable(data);
+	      google.setOnLoadCallback(function() {
+          drawChart(data.candidates, 'can_piechart_div')
+          drawChart(data.policies, 'pol_piechart_div')
+        });
+        google.load("visualization", "1", {packages:["corechart"]})
+
+	      function drawChart(chartData, divName) {
+
+	        var data = google.visualization.arrayToDataTable(chartData);
 
 	        var options = {
-	          //title: '2015 Presidential Election',
 	          //pieHole: 0.33,
+            backgroundColor: "transparent",
 	          is3D: false,
 	          chartArea: {left:0,top:30,width:'100%',height:'80%'},
 	          //backgroundColor:'white',
@@ -74,7 +113,7 @@
 
 	        };
 
-	        var chart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+	        var chart = new google.visualization.PieChart(document.getElementById(divName));
 	        chart.draw(data, options);
 	      }
     	</script>
@@ -91,7 +130,9 @@
 
 		</div>
 
-	    <div id="piechart_div"></div>
+	    <div id="can_piechart_div" class="piechart_div "></div>
+      <div id="pol_piechart_div" class="piechart_div "></div>
+      <!-- <div id="pol_piechart_div"></div> -->
 
   	</center>
 
