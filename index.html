@@ -17,45 +17,60 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
-        var socket = io('https://cudde.herokuapp.com:80/')
+        var candidates = {}
+        var policies = {}
+        var data = {}
+
+        var socket = io('https://cudde.herokuapp.com/')
     		socket.on('connect', function() {
     		  console.log('connected')
     		})
 
     		socket.on('welcome', function(msg) {
-    		  var data = msg.stats
-          console.log(data)
-          // drawChart(data)
+          msg = JSON.parse(msg)
+          // Construct the dictionary
+          for(var i = 0; i < msg.candidates.length; i++) {
+            candidates[msg.candidates[i]._id]=msg.candidates[i].name
+          }
+          for(var i = 0; i < msg.policies.length; i++) {
+            policies[msg.policies[i]._id]=msg.policies[i]
+          }
+
+    		  var stats = msg.stats
+          var chartData = [["Candidate", "Number of Votes"]]
+          for(var candidate in stats.candidates) {
+            chartData.push([candidates[candidate], parseInt(stats.candidates[candidate])])
+          }
+          data.candidates = chartData
+          drawChart(chartData)
     		})
 
     		socket.on('new_submission', function(msg) {
-    		  console.log('new vote: ' + msg)
+          msg = JSON.parse(msg)
+          var candidateName = candidates[msg.candidate_id]
+          for(var i = 0; i < data.candidates.length; i++) {
+            if(data.candidates[i][0] == candidateName) {
+              data.candidates[i][1]++
+              break;
+            }
+          }
+          drawChart(data.candidates)
     		})
 
 	      google.load("visualization", "1", {packages:["corechart"]});
 	      //google.setOnLoadCallback(drawChart);
 	      function drawChart(data) {
 	      	var votes
-	        var data = google.visualization.arrayToDataTable([
-
-	          ["Candidate", "Number of Votes"],		//random votes for testing
-	          ["Ben Carson", 11],
-	          ["Bernie Sanders", 17],
-	          ["Donald Trump", 5],
-	          ["Hillary Clinton", 6],
-	          ["Marco Rubio", 2],
-	          ["Martin Omally", 9]
-
-	        ]);
+	        var data = google.visualization.arrayToDataTable(data);
 
 	        var options = {
 	          //title: '2015 Presidential Election',
 	          //pieHole: 0.33,
-	          is3D: true,
+	          is3D: false,
 	          chartArea: {left:0,top:30,width:'100%',height:'80%'},
 	          //backgroundColor:'white',
 	          //backgroundColor: {stroke:'red', strokeWidth:10}, //border
-	          legend: {position:'bottom', alignment:'center', fontSize:30}
+	          legend: {position:'right', alignment:'center', fontSize:30}
 
 	        };
 
