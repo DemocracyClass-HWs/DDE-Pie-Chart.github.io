@@ -18,7 +18,7 @@ var totalVotes = 0;
 
 var lastAngle = 0;
 
-var angles = [60,60,60,60,60,60];
+var angles = [1,1,1,1,1,1];
 
 
 
@@ -28,8 +28,8 @@ function setup() {
   //canvas.parent("p5-container");
   
   button = createButton('generate random vote');
-  button.position(canvas.x+ 20, canvas.y + height - 20);
-  button.mousePressed(createRandomVote);
+  button.position(canvas.x+ 20, canvas.y + height - 50);
+  button.mousePressed(addVote);
 
   noLoop();
 }
@@ -70,10 +70,12 @@ function draw() {
   } 
   
   else if (totalVotes >= 2) {
-    for (var i = 0; i < 6; i++) { // data.length = 6 (6 candidates)
+    
+    startAngle = floor(random(360));
+    
+    for (var i = 0; i < totalVotes; i++) { // data.length = 6 (6 candidates)
       
-      arc(width/2, height/2, 200, 200, 0, lastAngle+radians(angles[0]));
-      lastAngle += radians(angles[i]);
+    
       
       if (i < 3) {
         r = floor(random(0,255));
@@ -84,7 +86,9 @@ function draw() {
       var color = (r,g,b);
       
       fill(color);
-      arc(width/2, height/2, diameter, diameter, 0, lastAngle+radians(angles[i]));
+      
+      // arc(x,y,width,height,startAngle,stopAngle,[mode])
+      arc(width/2, height/2, 200, 200, startAngle, startAngle+lastAngle+radians(angles[i]));
       lastAngle += radians(angles[i]);
       }
   
@@ -94,10 +98,15 @@ function draw() {
 }
 
 
-function createRandomVote() {
+function addVote() {
   randomVote = floor(random(0,6)); 
   votes[randomVote] = votes[randomVote]+1;
   totalVotes++;
+  var sum = 0;
+  for(int c=0; c<totalVotes; c++) {
+    sum += votes[c];
+  }
+  angles[randomVote] = 
   redraw();
 } 
 

@@ -1,79 +1,64 @@
-<!--- Voting Booth Pie Chart Display Page -->
-
 <html>
 
-	<head>
+  <head>
+   
+  	<!-- my CSS Stylesheet -->
+  	<link rel="stylesheet" href="css/stylesheet.css">
 
-		<!-- BOOTSTRAP and jQuery includes -->
-		<meta charset="utf-8">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  		
-  		<!-- sockeyt.io -->
-		<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  	<!-- p5 -->
+	<script src="libraries/p5.js" type="text/javascript"></script>
+	<script src="libraries/p5.dom.js" type="text/javascript"></script>
 
-  		<!-- P5 include and Pie Chart sketch 
-  		<script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script> 
-  		-->
-		<script src="libraries/p5.js" type="text/javascript"></script>
-    	<script src="libraries/p5.dom.js" type="text/javascript"></script>
-		
-		<!-- OTHER META STUFF -->
-		<meta name="description" content="2015 Election">
-	    <meta name="author" content="Hans Heidmann">
-	    <link rel="icon" href="../../favicon.ico">
-		
+	<!-- socket.io -->
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 
-	</head>
+	<!-- google visualization pie chart -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
 
-	<body>
+          ["Candidate", "Number of Votes"],
+          ["Ben Carson", 11],
+          ["Bernie Sanders", 17],
+          ["Donald Trump", 5],
+          ["Hillary Clinton", 6],
+          ["Marco Rubio", 2],
+          ["Martin Omally", 9]
 
+        ]);
 
-		<div style="background-color:black, width:100%, height: 100px">
+        var options = {
+          //title: '2015 Presidential Election',
+          is3D: true,
+          chartArea: {left:0,top:100,width:'800',height:'500'},
+          chartArea.backgroundColor:#000000
+        };
 
-		</div>
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_div'));
+        chart.draw(data, options);
+      }
+    </script>
 
-		<div id="p5-container">
-			<script language="javascript" type="text/javascript" src="p5-chart.js/sketch.js"></script>
-		</div>	
-
-		<script type="text/javascript">
-
-			// Heroku
-			var socket = io('https://cudde.herokuapp.com/')
-			socket.on('connect', function() {
-			  console.log('connected')
-			})
-
-			socket.on('welcome', function(msg){
-			  console.log('data: ' + msg)
-			})
-
-			socket.on('new_submission', function(msg){
-			  console.log('new vote: ' + msg)
-			})
+  </head>
 
 
-			// Chartist.js stuff
-			var data = {
-		  	series: [5, 3, 4]
-			};
 
-			var sum = function(a, b) { return a + b };
+  <body>
 
-			new Chartist.Pie('.ct-chart', data, {
-		  	labelInterpolationFnc: function(value) {
-		    return Math.round(value / data.series.reduce(sum) * 100) + '%';
-		  	}
-			});
+  	<div id="p5-banner">
+			<script language="javascript" type="text/javascript" src="p5-banner.js/sketch.js"></script>
+	</div>	
 
-		</script>
-
-		
+    <div id="piechart_div" style="width: 800px; height: 500px;"></div>
 
 
-	</body>
+
+  </body>
+
 </html>
+
+
+
