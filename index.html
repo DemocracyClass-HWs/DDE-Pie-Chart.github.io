@@ -1,0 +1,56 @@
+<!--- Voting Booth Pie Chart Display Page -->
+
+<html>
+
+	<head>
+
+		<!-- BOOTSTRAP and jQuery -->
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  		<!-- P5 -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script>
+		<!-- sockeyt.io -->
+		<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+
+	</head>
+
+	<body>
+
+		<script type="text/javascript">
+
+			// Heroku
+			var socket = io('https://cudde.herokuapp.com/')
+			socket.on('connect', function() {
+			  console.log('connected')
+			})
+
+			socket.on('welcome', function(msg){
+			  console.log('data: ' + msg)
+			})
+
+			socket.on('new_submission', function(msg){
+			  console.log('new vote: ' + msg)
+			})
+
+
+			// Chartist.js stuff
+			var data = {
+		  	series: [5, 3, 4]
+			};
+
+			var sum = function(a, b) { return a + b };
+
+			new Chartist.Pie('.ct-chart', data, {
+		  	labelInterpolationFnc: function(value) {
+		    return Math.round(value / data.series.reduce(sum) * 100) + '%';
+		  	}
+			});
+			
+		</script>
+
+		
+
+
+	</body>
+</html>
