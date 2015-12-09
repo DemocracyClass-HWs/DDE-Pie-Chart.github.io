@@ -87,22 +87,23 @@
           if(++submissionCount < 5) {
             return
           }
-          drawChart(data.candidates, 'can_piechart_div')
-          drawChart(data.policies, 'pol_piechart_div')
+          drawChart(data.candidates, 'can_piechart_div', 'Candidates')
+          drawChart(data.policies, 'pol_piechart_div', 'Policies')
           submissionCount = 0
     		})
 
 	      google.setOnLoadCallback(function() {
-          drawChart(data.candidates, 'can_piechart_div')
-          drawChart(data.policies, 'pol_piechart_div')
+          drawChart(data.candidates, 'can_piechart_div', 'Candidates')
+          drawChart(data.policies, 'pol_piechart_div', 'Policies')
         });
         google.load("visualization", "1", {packages:["corechart"]})
 
-	      function drawChart(chartData, divName) {
+	      function drawChart(chartData, divName, title) {
 
 	        var data = google.visualization.arrayToDataTable(chartData);
 
 	        var options = {
+            title: title,
 	          //pieHole: 0.33,
             backgroundColor: "transparent",
 	          is3D: false,
